@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// prisma/schema.prisma
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Tag {
+  id    String @id @default(uuid()) // ID unique du tag
+  name  String @unique // Nom du tag, par exemple "Peinture", "Plomberie", etc.
+  tasks Task[] @relation("TaskTags")
+}
+
+model Task {
+  id          String  @id @default(uuid())
+  content     String
+  priority    String
+  price       Decimal
+  discipline  String
+  description String
+  columnId    String
+  column      Column  @relation(fields: [columnId], references: [id])
+  tags        Tag[]   @relation("TaskTags") // Relation avec les tags via une table de jointure
+}
+
+model Building {
+  id            String   @id @default(uuid())
+  buildingName  String   @unique
+  buildingGroup String
+  subgroup      String
+  columns       Column[] // Un bâtiment a plusieurs colonnes (années)
+}
+
+model Column {
+  id         String   @id @default(uuid())
+  title      String
+  year       Int
+  buildingId String
+  building   Building @relation(fields: [buildingId], references: [id])
+  tasks      Task[] // Chaque colonne a ses propres tâches
+}
