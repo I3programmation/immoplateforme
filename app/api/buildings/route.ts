@@ -2,10 +2,22 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+// Gestion de la méthode GET pour récupérer les bâtiments, colonnes, tâches et tags associés
+export async function GET(request: Request) {
   try {
+    // Récupérer les bâtiments avec leurs colonnes, tâches et tags associés
     const buildings = await prisma.building.findMany({
-      orderBy: { buildingName: "asc" }, // Trie alphabétiquement
+      include: {
+        columns: {
+          include: {
+            tasks: {
+              include: {
+                tags: true, // Inclure les tags associés à chaque tâche
+              },
+            },
+          },
+        },
+      },
     });
 
     return new Response(JSON.stringify(buildings), {
@@ -13,7 +25,9 @@ export async function GET() {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("❌ Erreur lors de la récupération des bâtiments :", error);
-    return new Response("Erreur serveur", { status: 500 });
+    console.error(error);
+    return new Response("Erreur lors de la récupération des données", {
+      status: 500,
+    });
   }
 }

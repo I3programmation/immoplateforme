@@ -2,11 +2,14 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
-  webpack: (config) => {
-    config.resolve.alias["@"] = path.resolve(__dirname, ".");
-    return config;
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        "@": path.resolve(__dirname, "."),
+        // Add other aliases here if needed
+      },
+    },
   },
-  /* other config options here */
 };
 
 export default nextConfig;

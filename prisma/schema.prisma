@@ -30,7 +30,7 @@ model Task {
   discipline  String
   description String
   columnId    String
-  column      Column  @relation(fields: [columnId], references: [id])
+  column      Column  @relation(fields: [columnId], references: [id], onDelete: Cascade)
   tags        Tag[]   @relation("TaskTags") // Relation avec les tags via une table de jointure
 }
 
@@ -39,7 +39,7 @@ model Building {
   buildingName  String   @unique
   buildingGroup String
   subgroup      String
-  columns       Column[] // Un bâtiment a plusieurs colonnes (années)
+  columns       Column[]
 }
 
 model Column {
@@ -47,6 +47,6 @@ model Column {
   title      String
   year       Int
   buildingId String
-  building   Building @relation(fields: [buildingId], references: [id])
+  building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   tasks      Task[] // Chaque colonne a ses propres tâches
 }

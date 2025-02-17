@@ -5,9 +5,9 @@ function Logo() {
   return (
     <Link
       href={"/"}
-      className="font-bold text-3xl bg-gradient-to-r from-indigo-400 to-cyan-400 text-transparent bg-clip-text hover:cursor-pointer"
+      className="font-bold text-3xl text-transparent bg-clip-text bg-orange-600 hover:cursor-pointer"
     >
-      ImmoPlateforme
+      Immo<span className="text-white">Plateforme</span>
     </Link>
   );
 }

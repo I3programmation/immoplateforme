@@ -34,10 +34,17 @@ export interface Column {
   title: string;
   year: number;
   buildingId: string;
+  tasks?: Task[];
 }
 
 export interface TaskFormData {
   task: Task;
   column: Column;
   building: Building;
+}
+
+export interface TaskListColumn {
+  id: string;
+  title: string;
+  tasks: Task[];
 }

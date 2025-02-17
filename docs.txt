@@ -1,0 +1,16 @@
+    const getTotalPriceForYear = async (year: number) => {
+      try {
+        const response = await fetch(`/api/task/totalPrice?year=${year}`);
+        if (response.ok) {
+          const price = await response.json();
+          console.log(`Total price for year ${year}:`, price);
+          setTotalPrice(price);
+        } else {
+          const errorData = await response.json();
+          console.error("Error fetching total price", errorData);
+        }
+      } catch (error) {
+        console.error("Error fetching total price:", error);
+      }
+    };
+  
