@@ -7,7 +7,7 @@ function Logo() {
       href={"/"}
       className="font-bold text-3xl text-transparent bg-clip-text bg-orange-600 hover:cursor-pointer"
     >
-      Immo<span className="text-white">Plateforme</span>
+      Immo<span className="text-black">Plateforme</span>
     </Link>
   );
 }

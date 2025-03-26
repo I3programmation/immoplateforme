@@ -7,6 +7,11 @@ export async function GET(request: Request) {
   try {
     // Récupérer les bâtiments avec leurs colonnes, tâches et tags associés
     const buildings = await prisma.building.findMany({
+      where: {
+        buildingName: {
+          not: "Default TaskList",
+        },
+      },
       include: {
         columns: {
           include: {

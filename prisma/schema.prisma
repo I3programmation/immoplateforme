@@ -23,15 +23,16 @@ model Tag {
 }
 
 model Task {
-  id          String  @id @default(uuid())
+  id          String @id @default(uuid())
   content     String
   priority    String
-  price       Decimal
+  price       String
   discipline  String
   description String
   columnId    String
-  column      Column  @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  tags        Tag[]   @relation("TaskTags") // Relation avec les tags via une table de jointure
+  index       Int
+  column      Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  tags        Tag[]  @relation("TaskTags") // Relation avec les tags via une table de jointure
 }
 
 model Building {
@@ -45,7 +46,7 @@ model Building {
 model Column {
   id         String   @id @default(uuid())
   title      String
-  year       Int
+  year       String
   buildingId String
   building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   tasks      Task[] // Chaque colonne a ses propres tâches

@@ -58,7 +58,7 @@ const Modal: React.FC<ModalProps> = ({
       column: {
         id: "",
         title: "",
-        year: 2025,
+        year: "2025",
         buildingId: "",
       },
       building: {
@@ -151,12 +151,12 @@ const Modal: React.FC<ModalProps> = ({
                 onChange={(e) =>
                   setTaskFormData((prev) => ({
                     ...prev,
-                    column: { ...prev.column, year: Number(e.target.value) },
+                    column: { ...prev.column, year: e.target.value },
                   }))
                 }
                 label="Année de réalisation"
               >
-                {[2025, 2026, 2027, 2028, 2029].map((year) => (
+                {["2025", "2026", "2027", "2028", "2029"].map((year) => (
                   <MenuItem key={year} value={year}>
                     {year}
                   </MenuItem>
@@ -173,8 +173,7 @@ const Modal: React.FC<ModalProps> = ({
                 ...prev,
                 task: {
                   ...prev.task,
-                  price:
-                    e.target.value === "" ? "" : parseFloat(e.target.value),
+                  price: e.target.value === "" ? "" : e.target.value,
                 },
               }))
             }

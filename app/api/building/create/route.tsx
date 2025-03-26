@@ -19,11 +19,11 @@ export async function POST(req: Request) {
 
     // 🔹 Création des colonnes associées (2025-2029)
     const columnsData = [
-      { title: "2025", year: 2025 },
-      { title: "2026", year: 2026 },
-      { title: "2027", year: 2027 },
-      { title: "2028", year: 2028 },
-      { title: "2029", year: 2029 },
+      { title: "2025", year: "2025" },
+      { title: "2026", year: "2026" },
+      { title: "2027", year: "2027" },
+      { title: "2028", year: "2028" },
+      { title: "2029", year: "2029" },
     ];
 
     const createdColumns = await prisma.$transaction(
