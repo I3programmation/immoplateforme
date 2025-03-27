@@ -47,13 +47,23 @@ const TaskCostMultiplierModal = ({
   };
 
   const handleCancel = () => {
-    setCheckedMultipliers({});
-    setCurrentlySelectedMultipliers([]);
     handleClose();
   };
 
+  const handleClear = () => {
+    setCheckedMultipliers({});
+    setCurrentlySelectedMultipliers([]);
+  };
+
   return (
-    <div className="bg-white p-4 rounded border border-black">
+    <div className="bg-white p-4 rounded border border-black relative">
+      <button
+        className="absolute top-3 right-3"
+        onClick={handleCancel}
+        aria-label="Close"
+      >
+        X
+      </button>
       <h2 className="mb-4 font-bold text-center">Calcul des coûts</h2>
 
       <div className="mb-4">
@@ -87,9 +97,9 @@ const TaskCostMultiplierModal = ({
       <div className="flex justify-between mt-2">
         <button
           className="text-rose-500 py-1 px-3 hover:underline"
-          onClick={handleCancel}
+          onClick={handleClear}
         >
-          Annuler
+          Rénitialiser
         </button>
         <button
           className="bg-mainBackgroundColor text-white py-1 px-4 rounded hover:opacity-90"
