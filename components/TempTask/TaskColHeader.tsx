@@ -1,31 +1,49 @@
-import { Column, Task } from "@/types/types";
+import { Column, Multiplier, Task } from "@/types/types";
 import { useMemo } from "react";
 
 interface TaskColHeaderProps {
   title: string;
   tasks: Task[];
   columns: Column[];
+  currentlyAppliedMultipliers: Multiplier[];
 }
 const TaskColHeader: React.FC<TaskColHeaderProps> = ({
   title,
   tasks,
   columns,
+  currentlyAppliedMultipliers,
 }) => {
   const columnCost = useMemo(() => {
     const columTasks = tasks.filter((task) =>
       columns.some((col) => col.id === task.columnId)
     );
-    const columnCost = columTasks.reduce((currentColumnTotal, task) => {
+    const columnGrossCost = columTasks.reduce((currentColumnTotal, task) => {
       const taskCost = Number(task.price) || 0;
       return currentColumnTotal + taskCost;
     }, 0);
-    return columnCost;
-  }, [columns, tasks]);
+
+    const columnNetCost = currentlyAppliedMultipliers.reduce(
+      (currentTotal, multiplier) => {
+        return currentTotal * multiplier.value;
+      },
+      columnGrossCost
+    );
+    return columnNetCost;
+  }, [columns, currentlyAppliedMultipliers, tasks]);
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center bg-mainBackgroundColor border-b border-r border-white p-4">
       <span>{title}</span>
-      <span>{columnCost}$</span>
+      <div>
+        <span>{columnCost} $ </span>
+        <sup>
+          (
+          {currentlyAppliedMultipliers
+            .map((multiplier) => multiplier.id)
+            .join(", ") || 0}
+          )
+        </sup>
+      </div>
     </div>
   );
 };

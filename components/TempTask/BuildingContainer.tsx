@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo } from "react";
-import { Building, Column, Task } from "@/types/types";
+import { Building, Column, Multiplier, Task } from "@/types/types";
 import ColumnContainer from "./ColumnContainer";
 import { SortableContext } from "@dnd-kit/sortable";
 import TrashIcons from "../icons/TrashIcons";
@@ -11,6 +11,7 @@ interface BuildingContainerProps {
   deleteBuilding: (id: string) => void;
   columns: Column[]; // Pass columns separately since Building doesn't have them
   tasks: Task[];
+  currentlyAppliedMultipliers: Multiplier[];
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   deleteTask: (id: string) => void;
   // ✅ Add onDragOver with correct type
@@ -22,6 +23,7 @@ function BuildingContainer({
   deleteBuilding,
   columns,
   tasks,
+  currentlyAppliedMultipliers,
   setTasks,
   deleteTask,
   onDoubleClick,
@@ -35,18 +37,23 @@ function BuildingContainer({
     () => buildingColumns.map((col) => col.id),
     [buildingColumns]
   );
-  const totalBuildingCost = useMemo(
-    () =>
-      buildingColumns.reduce((currentTotal, column) => {
-        const columnTasks = tasks.filter((task) => task.columnId === column.id);
-        const columnCost = columnTasks.reduce((currentColumnTotal, task) => {
-          const taskCost = Number(task.price) || 0;
-          return currentColumnTotal + taskCost;
-        }, 0);
-        return currentTotal + columnCost;
-      }, 0),
-    [buildingColumns, tasks]
-  );
+  const totalBuildingCost = useMemo(() => {
+    const totalGrossCost = buildingColumns.reduce((currentTotal, column) => {
+      const columnTasks = tasks.filter((task) => task.columnId === column.id);
+      const columnCost = columnTasks.reduce((currentColumnTotal, task) => {
+        const taskCost = Number(task.price) || 0;
+        return currentColumnTotal + taskCost;
+      }, 0);
+      return currentTotal + columnCost;
+    }, 0);
+    const totalNetCost = currentlyAppliedMultipliers.reduce(
+      (currentTotal, multiplier) => {
+        return currentTotal * multiplier.value;
+      },
+      totalGrossCost
+    );
+    return totalNetCost;
+  }, [buildingColumns, currentlyAppliedMultipliers, tasks]);
 
   return (
     <div className="flex flex-wrap items-center overflow-x-auto overflow-y-hidden ">
@@ -58,7 +65,16 @@ function BuildingContainer({
             <h3 className="text-xl font-thin">{building.buildingGroup}</h3>
             <h3 className="text-xl font-thin">{building.subgroup}</h3>
           </div>
-          <span className=" ml-auto">{totalBuildingCost}$</span>
+          <div className="ml-auto">
+            <span>{totalBuildingCost} $ </span>
+            <sup>
+              (
+              {currentlyAppliedMultipliers
+                .map((multiplier) => multiplier.id)
+                .join(", ") || 0}
+              )
+            </sup>
+          </div>
           <button
             className="mt-auto"
             onClick={() => deleteBuilding(building.id)}
@@ -78,6 +94,7 @@ function BuildingContainer({
                 setTasks={setTasks}
                 deleteTask={deleteTask} // ✅ Pass deleteTask
                 onDoubleClick={onDoubleClick} // ✅ Pass onDoubleClick
+                currentlyAppliedMultipliers={currentlyAppliedMultipliers}
               />
             ))}
           </SortableContext>

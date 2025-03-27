@@ -4,7 +4,7 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Column, Task } from "@/types/types";
+import { Column, Multiplier, Task } from "@/types/types";
 import { CSS } from "@dnd-kit/utilities";
 import { useMemo } from "react";
 import { SortableTask } from "@/components/SortableTask";
@@ -12,6 +12,7 @@ import { SortableTask } from "@/components/SortableTask";
 interface ColumnContainerProps {
   column: Column;
   tasks: Task[];
+  currentlyAppliedMultipliers: Multiplier[];
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   deleteTask: (id: string) => void;
 
@@ -21,19 +22,24 @@ interface ColumnContainerProps {
 function ColumnContainer({
   column,
   tasks,
-
+  currentlyAppliedMultipliers,
   deleteTask,
   onDoubleClick,
 }: ColumnContainerProps) {
   const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
-  const totalCost = useMemo(
-    () =>
-      tasks.reduce((currentTotal, task) => {
-        const taskCost = Number(task.price) || 0;
-        return currentTotal + taskCost;
-      }, 0),
-    [tasks]
-  );
+  const totalCost = useMemo(() => {
+    const grossCost = tasks.reduce((currentTotal, task) => {
+      const taskCost = Number(task.price) || 0;
+      return currentTotal + taskCost;
+    }, 0);
+    const netCost = currentlyAppliedMultipliers.reduce(
+      (currentTotal, multiplier) => {
+        return currentTotal * multiplier.value;
+      },
+      grossCost
+    );
+    return netCost;
+  }, [currentlyAppliedMultipliers, tasks]);
 
   const {
     setNodeRef,
@@ -85,7 +91,16 @@ function ColumnContainer({
             ))}
           </SortableContext>
         </div>
-        <span className="self-end mt-auto">{totalCost}$</span>
+        <div className="self-end mt-auto">
+          <span>{totalCost} $ </span>
+          <sup>
+            (
+            {currentlyAppliedMultipliers
+              .map((multiplier) => multiplier.id)
+              .join(", ") || 0}
+            )
+          </sup>
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import PlusIcon from "../icons/PlusIcon";
-import { Building, Column, Task } from "@/types/types";
+import { Building, Column, Multiplier, Task } from "@/types/types";
 import BuildingContainer from "./BuildingContainer";
 import BuildingModal from "../BuildingModal";
 import { add } from "date-fns";
 import { DragOverEvent } from "@dnd-kit/core";
 import TaskColHeader from "./TaskColHeader";
+import { Popover } from "@mui/material";
+import TaskCostMultiplierModal from "./TaskCostMultiplierModal";
+
+const multipliers: Multiplier[] = [
+  { id: "1", name: "TPS", value: 1.05 },
+  { id: "2", name: "TVQ", value: 1.09975 },
+  { id: "3", name: "Multiplicateur 3", value: 1.25 },
+  { id: "4", name: "Multiplicateur 4", value: 0.78 },
+  { id: "5", name: "Multiplicateur 5", value: 1.8 },
+];
 
 interface BuildingKanbanBoardProps {
   tasks: Task[];
@@ -25,6 +35,11 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [columns, setColumns] = useState<Column[]>([]);
   const [isBuildingModalOpen, setIsBuildingModalOpen] = useState(false);
+  const [isCostCalculationOpen, setIsCostCalculationOpen] = useState(false);
+  const [anchorElCostCalculation, setAnchorElCostCalculation] =
+    useState<HTMLElement | null>(null);
+  const [currentlySelectedMultipliers, setCurrentlySelectedMultipliers] =
+    useState<Multiplier[]>([]);
 
   const titles = ["2025", "2026", "2027", "2028", "2029"];
 
@@ -90,6 +105,18 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
     }
   };
 
+  const handleCostCalculationClick = (
+    event: React.MouseEvent<HTMLSpanElement>
+  ) => {
+    setIsCostCalculationOpen(true);
+    setAnchorElCostCalculation(event.currentTarget);
+  };
+
+  const handleCostCalculationClose = () => {
+    setIsCostCalculationOpen(false);
+    setAnchorElCostCalculation(null);
+  };
+
   return (
     <div className="p-4">
       <div className="flex w-full">
@@ -120,7 +147,38 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
             {/* Tags & Cost Calculation */}
             <div className="flex items-center gap-4 text-white ">
               <span>#tags •••</span>
-              <span>Calcul des coûts •••</span>
+              <span
+                onClick={handleCostCalculationClick}
+                className="cursor-pointer"
+              >
+                Calcul des coûts •••
+              </span>
+              <Popover
+                open={isCostCalculationOpen}
+                onClose={handleCostCalculationClose}
+                anchorEl={anchorElCostCalculation}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                slotProps={{
+                  paper: {
+                    style: {
+                      backgroundColor: "transparent",
+                      boxShadow: "none",
+                    },
+                  },
+                }}
+              >
+                <TaskCostMultiplierModal
+                  multipliers={multipliers}
+                  currentlySelectedMultipliers={currentlySelectedMultipliers}
+                  setCurrentlySelectedMultipliers={
+                    setCurrentlySelectedMultipliers
+                  }
+                  handleClose={handleCostCalculationClose}
+                />
+              </Popover>
             </div>
           </div>
 
@@ -137,6 +195,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
                 title={title}
                 tasks={tasks}
                 columns={columns.filter((col) => col.title === title)}
+                currentlyAppliedMultipliers={currentlySelectedMultipliers}
               />
             ))}
           </div>
@@ -151,6 +210,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
             columns={columns.filter((col) => col.buildingId === building.id)}
             deleteBuilding={deleteBuilding}
             tasks={tasks}
+            currentlyAppliedMultipliers={currentlySelectedMultipliers}
             setTasks={setTasks}
             deleteTask={deleteTask} // ✅ Pass deleteTask
             onDoubleClick={onDoubleClick}

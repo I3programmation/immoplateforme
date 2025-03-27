@@ -51,3 +51,9 @@ export interface TaskListColumn {
   title: string;
   tasks: Task[];
 }
+
+export interface Multiplier {
+  id: string;
+  name: string;
+  value: number;
+}
