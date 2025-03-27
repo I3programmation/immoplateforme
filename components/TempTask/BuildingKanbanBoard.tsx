@@ -6,6 +6,7 @@ import BuildingContainer from "./BuildingContainer";
 import BuildingModal from "../BuildingModal";
 import { add } from "date-fns";
 import { DragOverEvent } from "@dnd-kit/core";
+import TaskColHeader from "./TaskColHeader";
 
 interface BuildingKanbanBoardProps {
   tasks: Task[];
@@ -131,13 +132,12 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
           {/* Existing - Years Row */}
           <div className="flex ">
             {titles.map((title, index) => (
-              <div
+              <TaskColHeader
                 key={index}
-                className="flex-1 flex flex-col items-center justify-center bg-mainBackgroundColor border-b border-r border-white p-4"
-              >
-                <span>{title}</span>
-                <span>0 $</span>
-              </div>
+                title={title}
+                tasks={tasks}
+                columns={columns.filter((col) => col.title === title)}
+              />
             ))}
           </div>
         </div>
