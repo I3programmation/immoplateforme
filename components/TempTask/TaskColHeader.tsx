@@ -23,13 +23,17 @@ const TaskColHeader: React.FC<TaskColHeaderProps> = ({
       return currentColumnTotal + taskCost;
     }, 0);
 
-    const columnNetCost = currentlyAppliedMultipliers.reduce(
-      (currentTotal, multiplier) => {
-        return currentTotal * multiplier.value;
-      },
-      columnGrossCost
+    const totalAdjustementPercentage = currentlyAppliedMultipliers.reduce(
+      (currentTotal, multiplier) => currentTotal + (multiplier.value - 1),
+      0
     );
-    return columnNetCost;
+
+    const combinedMultiplierValue = 1 + totalAdjustementPercentage;
+    const rawNetCost = columnGrossCost * combinedMultiplierValue;
+    const roundedNetCost =
+      Math.round((rawNetCost + Number.EPSILON) * 100) / 100;
+
+    return roundedNetCost;
   }, [columns, currentlyAppliedMultipliers, tasks]);
 
   return (

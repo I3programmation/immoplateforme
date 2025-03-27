@@ -46,13 +46,18 @@ function BuildingContainer({
       }, 0);
       return currentTotal + columnCost;
     }, 0);
-    const totalNetCost = currentlyAppliedMultipliers.reduce(
-      (currentTotal, multiplier) => {
-        return currentTotal * multiplier.value;
-      },
-      totalGrossCost
+
+    const totalAdjustementPercentage = currentlyAppliedMultipliers.reduce(
+      (currentTotal, multiplier) => currentTotal + (multiplier.value - 1),
+      0
     );
-    return totalNetCost;
+
+    const combinedMultiplierValue = 1 + totalAdjustementPercentage;
+    const rawNetCost = totalGrossCost * combinedMultiplierValue;
+    const roundedNetCost =
+      Math.round((rawNetCost + Number.EPSILON) * 100) / 100;
+
+    return roundedNetCost;
   }, [buildingColumns, currentlyAppliedMultipliers, tasks]);
 
   return (
