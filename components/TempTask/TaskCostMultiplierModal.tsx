@@ -1,3 +1,4 @@
+"use client";
 import { Multiplier } from "@/types/types";
 import { useEffect, useState } from "react";
 

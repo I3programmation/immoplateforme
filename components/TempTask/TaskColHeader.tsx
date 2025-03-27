@@ -1,3 +1,4 @@
+"use client";
 import { Column, Multiplier, Task } from "@/types/types";
 import { useMemo } from "react";
 
