@@ -33,17 +33,14 @@ function ColumnContainer({
       return currentTotal + taskCost;
     }, 0);
 
-    const totalAdjustementPercentage = currentlyAppliedMultipliers.reduce(
-      (currentTotal, multiplier) => currentTotal + (multiplier.value - 1),
-      0
+    const rawFinalCost = currentlyAppliedMultipliers.reduce(
+      (currentTotal, multiplier) => {
+        return currentTotal * multiplier.value;
+      },
+      grossCost
     );
 
-    const combinedMultiplierValue = 1 + totalAdjustementPercentage;
-    const rawNetCost = grossCost * combinedMultiplierValue;
-    const roundedNetCost =
-      Math.round((rawNetCost + Number.EPSILON) * 100) / 100;
-
-    return roundedNetCost;
+    return Math.round((rawFinalCost + Number.EPSILON) * 100) / 100;
   }, [currentlyAppliedMultipliers, tasks]);
 
   const {
