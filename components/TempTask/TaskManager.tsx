@@ -343,7 +343,7 @@ function TaskManager() {
           PaperProps={{
             sx: {
               width: `${drawerWidth}px`,
-              mt: "60px",
+              mt: "52px",
             },
           }}
         >
@@ -360,8 +360,8 @@ function TaskManager() {
 
         <button
           onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-          className={`fixed top-[150px] transform -translate-y-1/2 bg-primaryColor rounded-r-lg shadow-md w-10 h-20 z-[1300] transition-all duration-200 ${
-            isDrawerOpen ? `left-[${drawerWidth}px]` : "left-0"
+          className={`fixed top-[180px] transform -translate-y-1/2 bg-primaryColor rounded-r-lg shadow-md w-10 h-20 z-[1300] transition-all duration-200 ${
+            isDrawerOpen ? `left-[300px]` : "left-0"
           } hover:opacity-80`}
         >
           {isDrawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}

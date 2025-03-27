@@ -17,6 +17,7 @@ import {
 } from "@dnd-kit/sortable";
 import { SortableTask } from "@/components/SortableTask";
 import { Add } from "@mui/icons-material";
+import { SearchIcon } from "lucide-react";
 
 import Grid from "@mui/material/Grid";
 import { Task, TaskFormData, UpdateTaskData } from "@/types/types";
@@ -26,7 +27,6 @@ interface TaskListProps {
   tasks: Task[];
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   deleteTask: (id: string) => void;
-
   onDoubleClick: (taskId: string) => void;
   onAdd: () => void;
 }
@@ -35,7 +35,6 @@ const TaskList: React.FC<TaskListProps> = ({
   tasks,
   setTasks,
   deleteTask,
-
   onDoubleClick,
   onAdd,
 }) => {
@@ -81,12 +80,24 @@ const TaskList: React.FC<TaskListProps> = ({
   );
 
   return (
-    <div className="pl-2 mt-4 w-full h-full ">
-      <h2 className="flex text-2xl pr-4 justify-center items-center font-bold mb-4 border-b border-border">
-        <span className="flex-grow text-center">Travaux</span>
-        <Add className="ml-auto cursor-pointer" onClick={onAdd} />
+    <div className="pl-2w-full h-full border-textColor border-t-[0.12rem] border-r-[0.12rem]">
+      <h2 className="flex text-3xl pr-4 justify-center items-center mt-[3rem] font-bold mb-3">
+        <span className="text-center text-3xl">Travaux</span>
+        <Add className=" ml-1 cursor-pointer text-primaryColor text-xs" onClick={onAdd} />
       </h2>
-      <div className="flex justify-center">
+        <div className="relative w-full px-3 ">
+            <input
+            type="text"
+            placeholder="Rechercher..."
+            className="p-2 bg-backgoundColor text-textColor border border-secondaryColor rounded w-full"
+            />
+            <span
+            className="absolute top-1/2 right-[10%] transform -translate-y-1/2 text-textColor"
+            >
+              <SearchIcon size={20} className="text-primaryColor" />
+            </span>
+        </div>
+      <div className="flex justify-center border-border border-t-[0.05rem] border-textColor mt-4">
         <Grid
           container
           spacing={2}

@@ -91,7 +91,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
   };
 
   return (
-    <div className="p-4 mt-5">
+    <div className="p-4 mt-5 pb-[10%] overflow-y-auto">
       <div className="flex w-full">
         {/* Left Section - IMMEUBLE */}
         <div className="w-1/6 flex items-center rounded-tl-2xl justify-center bg-backgoundColor border border-secondaryColor p-2 text-textColor">
@@ -121,18 +121,18 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
         <div className="w-5/6">
           {/* 🔥 NEW: Top Bar with Search + Tags + Cost Calculation */}
           <div className="flex items-center h-[4.25rem] pl-[1rem] justify-between rounded-tr-2xl bg-backgoundColor border-t border-b border-r border-secondaryColor p-2">
-            <div className="relative w-1/3">
-              <input
-              type="text"
-              placeholder="Rechercher..."
-              className="p-2 bg-backgoundColor text-textColor border border-secondaryColor rounded w-full"
-              />
-              <span
-              className="absolute top-1/2 right-[4%] transform -translate-y-1/2 text-textColor"
-              >
-              <SearchIcon size={20} className="text-primaryColor" />
-              </span>
-            </div>
+              <div className="relative w-1/3">
+                <input
+                type="text"
+                placeholder="Rechercher..."
+                className="p-2 bg-backgoundColor text-textColor border border-secondaryColor rounded w-full"
+                />
+                <span
+                className="absolute top-1/2 right-[4%] transform -translate-y-1/2 text-textColor"
+                >
+                <SearchIcon size={20} className="text-primaryColor" />
+                </span>
+              </div>
 
             {/* Tags & Cost Calculation */}
             <div className="flex items-center justify-end gap-[3rem] text-textColor text-lg w-1/2 mr-5">
@@ -176,7 +176,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
         </div>
       </div>
 
-      <div className="w-full max-h-[80vh] overflow-y-auto ">
+      <div className="w-full  overflow-y-auto ">
         {buildings.map((building) => (
           <BuildingContainer
             key={building.id}
