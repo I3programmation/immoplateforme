@@ -15,15 +15,15 @@ function ThemeSwitcher() {
   if (!mounted) return null;
   return (
     <Tabs defaultValue={theme}>
-      <TabsList className="border">
+      <TabsList className="bg-backgroundColor">
         <TabsTrigger value="light" onClick={() => setTheme("light")}>
-          <SunIcon className="h-[1.2rem] w-[1.2rem]" />
+          <SunIcon className="h-[1.2rem] w-[1.2rem] text-primaryColor" />
         </TabsTrigger>
         <TabsTrigger value="dark" onClick={() => setTheme("dark")}>
-          <MoonIcon className="h-[1.2rem] w-[1.2rem] rotate-90 transition-all dark:rotate-0" />
+          <MoonIcon className="h-[1.3rem] w-[1.3rem] rotate-90 transition-all dark:rotate-0 text-primaryColor" />
         </TabsTrigger>
         <TabsTrigger value="system" onClick={() => setTheme("system")}>
-          <DesktopIcon className="h-[1.2rem] w-[1.2rem]" />
+          <DesktopIcon className="h-[1.3rem] w-[1.3rem] text-primaryColor" />
         </TabsTrigger>
       </TabsList>
     </Tabs>

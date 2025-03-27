@@ -40,11 +40,11 @@ function BuildingContainer({
     <div className="flex flex-wrap items-center overflow-x-auto overflow-y-hidden ">
       <div className="m-auto flex">
         {/* Building Info */}
-        <div className="bg-mainBackgroundColor border-b border-r border-l border-white p-4 flex w-[250px]  ">
+        <div className="bg-backgoundColor border-b border-r border-l border-secondaryColor p-4 flex w-[250px]  ">
           <div className="flex flex-col">
-            <h2 className="text-3xl font-semibold">{building.buildingName}</h2>
-            <h3 className="text-xl font-thin">{building.buildingGroup}</h3>
-            <h3 className="text-xl font-thin">{building.subgroup}</h3>
+            <h2 className="text-3xl text-textColor font-semibold">{building.buildingName}</h2>
+            <h3 className="text-xl text-textColor font-thin">{building.buildingGroup}</h3>
+            <h3 className="text-xl text-textColor font-thin">{building.subgroup}</h3>
           </div>
           <button
             className="flex justify-end items-end"

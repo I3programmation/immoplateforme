@@ -358,25 +358,14 @@ function TaskManager() {
           />
         </Drawer>
 
-        <IconButton
+        <button
           onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-          sx={{
-            position: "fixed",
-            left: isDrawerOpen ? `${drawerWidth}px` : "0",
-            top: "150px",
-            transform: "translateY(-50%)",
-            backgroundColor: "#f8f9fa",
-            borderRadius: "0 8px 8px 0",
-            boxShadow: "2px 0 5px rgba(0,0,0,0.2)",
-            width: "40px",
-            height: "80px",
-            zIndex: 1300,
-            transition: "left 0.2s ease-in-out",
-            "&:hover": { backgroundColor: "#e0e0e0" },
-          }}
+          className={`fixed top-[150px] transform -translate-y-1/2 bg-primaryColor rounded-r-lg shadow-md w-10 h-20 z-[1300] transition-all duration-200 ${
+            isDrawerOpen ? `left-[${drawerWidth}px]` : "left-0"
+          } hover:opacity-80`}
         >
           {isDrawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-        </IconButton>
+        </button>
 
         <div className="flex justify-center w-full h-full">
           <BuildingKanbanBoard
