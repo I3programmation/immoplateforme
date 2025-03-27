@@ -35,6 +35,18 @@ function BuildingContainer({
     () => buildingColumns.map((col) => col.id),
     [buildingColumns]
   );
+  const totalBuildingCost = useMemo(
+    () =>
+      buildingColumns.reduce((currentTotal, column) => {
+        const columnTasks = tasks.filter((task) => task.columnId === column.id);
+        const columnCost = columnTasks.reduce((currentColumnTotal, task) => {
+          const taskCost = Number(task.price) || 0;
+          return currentColumnTotal + taskCost;
+        }, 0);
+        return currentTotal + columnCost;
+      }, 0),
+    [buildingColumns, tasks]
+  );
 
   return (
     <div className="flex flex-wrap items-center overflow-x-auto overflow-y-hidden ">
@@ -46,7 +58,7 @@ function BuildingContainer({
             <h3 className="text-xl font-thin">{building.buildingGroup}</h3>
             <h3 className="text-xl font-thin">{building.subgroup}</h3>
           </div>
-          <span className=" ml-auto">0$</span>
+          <span className=" ml-auto">{totalBuildingCost}$</span>
           <button
             className="mt-auto"
             onClick={() => deleteBuilding(building.id)}
