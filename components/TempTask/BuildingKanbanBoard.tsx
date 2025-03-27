@@ -133,9 +133,10 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
             {titles.map((title, index) => (
               <div
                 key={index}
-                className="flex-1 flex items-center justify-center bg-mainBackgroundColor border-b border-r border-white p-4"
+                className="flex-1 flex flex-col items-center justify-center bg-mainBackgroundColor border-b border-r border-white p-4"
               >
-                {title}
+                <span>{title}</span>
+                <span>0 $</span>
               </div>
             ))}
           </div>

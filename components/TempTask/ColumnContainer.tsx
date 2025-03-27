@@ -75,6 +75,7 @@ function ColumnContainer({
             />
           ))}
         </SortableContext>
+        <span className="self-end mt-auto">0$</span>
       </div>
     </div>
   );
