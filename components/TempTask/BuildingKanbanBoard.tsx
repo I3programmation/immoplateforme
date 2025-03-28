@@ -94,7 +94,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
     <div className="p-4 mt-5 pb-[10%] overflow-y-auto">
       <div className="flex w-full">
         {/* Left Section - IMMEUBLE */}
-        <div className="w-1/6 flex items-center rounded-tl-2xl justify-center bg-backgoundColor border border-secondaryColor p-2 text-textColor">
+        <div className="w-1/6 flex items-center rounded-tl-2xl justify-center bg-backgroundColor border border-secondaryColor p-2 text-textColor">
           <div className="flex h-full items-end">
             <div className="flex gap-1 h-1/5 mb-3">
                 <h2 className="text-[1.8rem] font-bold">Immeuble</h2>
@@ -120,12 +120,12 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
         {/* Right Section (Contains Search Bar + ANNÉE DE RÉALISATION + Years) */}
         <div className="w-5/6">
           {/* 🔥 NEW: Top Bar with Search + Tags + Cost Calculation */}
-          <div className="flex items-center h-[4.25rem] pl-[1rem] justify-between rounded-tr-2xl bg-backgoundColor border-t border-b border-r border-secondaryColor p-2">
+          <div className="flex items-center h-[4.25rem] pl-[1rem] justify-between rounded-tr-2xl bg-backgroundColor border-t border-b border-r border-secondaryColor p-2">
               <div className="relative w-1/3">
                 <input
                 type="text"
                 placeholder="Rechercher..."
-                className="p-2 bg-backgoundColor text-textColor border border-secondaryColor rounded w-full"
+                className="p-2 bg-backgroundColor text-textColor border border-secondaryColor rounded w-full"
                 />
                 <span
                 className="absolute top-1/2 right-[4%] transform -translate-y-1/2 text-textColor"
@@ -152,7 +152,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
           </div>
 
           {/* Existing - Année de Réalisation */}
-          <div className="flex items-center justify-center bg-backgoundColor border-b border-r border-secondaryColor p-2 text-textColor">
+          <div className="flex items-center justify-center bg-backgroundColor border-b border-r border-secondaryColor p-2 text-textColor">
             <h2 className="text-[1.3rem]">
               Année de réalisation
             </h2>
@@ -167,7 +167,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
             {titles.map((title, index) => (
               <div
                 key={index}
-                className="flex-1 flex items-center justify-center bg-backgoundColor border-b border-r border-secondaryColor p-4 text-textColor"
+                className="flex-1 flex items-center justify-center bg-backgroundColor border-b border-r border-secondaryColor p-4 text-textColor"
               >
                 {title}
               </div>

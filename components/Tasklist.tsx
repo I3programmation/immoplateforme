@@ -89,7 +89,7 @@ const TaskList: React.FC<TaskListProps> = ({
             <input
             type="text"
             placeholder="Rechercher..."
-            className="p-2 bg-backgoundColor text-textColor border border-secondaryColor rounded w-full"
+            className="p-2 bg-backgroundColor text-textColor border border-secondaryColor rounded w-full"
             />
             <span
             className="absolute top-1/2 right-[10%] transform -translate-y-1/2 text-textColor"

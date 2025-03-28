@@ -61,7 +61,7 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
         // Add your custom theme colors here
-        backgoundColor: "#FFFFFF",
+        backgroundColor: "#FFFFFF",
         textColor : "#000000",
         secondaryColor: "#000000",
         primaryColor: "#006DFF",
