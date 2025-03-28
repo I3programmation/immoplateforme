@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import React, { useState } from "react";
 
 interface PrioritySelectorProps {
@@ -29,26 +30,28 @@ const PrioritySelector: React.FC<PrioritySelectorProps> = ({
   };
 
   return (
-    <div className="relative ">
+    <div onClick={() => setIsOpen(!isOpen)} className="relative border border-gray-300 rounded-md p-2 w-[5rem] justify-between flex items-center">
       <div
-        className={`w-10  h-10 rounded-full flex items-center justify-center cursor-pointer ${getPriorityColor(
+        className={`w-6  h-6 rounded-full flex items-center justify-center cursor-pointer ${getPriorityColor(
           parseInt(priority, 10)
         )}`}
-        onClick={() => setIsOpen(!isOpen)}
+
         style={{
-          fontSize: "30px",
+          fontSize: "13px",
           color: "black",
           fontWeight: "bold",
           lineHeight: "1",
         }}
       >
         {priority}
+
       </div>
+      <ChevronDown size={16} />
       {isOpen && (
         <select
           value={priority}
           onChange={handleSelect}
-          className="absolute top-12 left-0 border p-2 bg-white z-50"
+          className="absolute top-12 left-0 border p-2 bg-white z-50 w-[5rem]"
           size={15}
         >
           {[...Array(15).keys()].map((i) => (

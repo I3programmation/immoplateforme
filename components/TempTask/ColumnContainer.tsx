@@ -78,7 +78,7 @@ function ColumnContainer({
       <div
         ref={setNodeRef}
         style={style}
-        className="bg-columnBackgroundColor w-[250px] h-[300px] max-h-[500px]  flex flex-col opacity-40 border-2 border-rose-500"
+        className="bg-backgroundColor w-[250px] h-[300px] max-h-[500px]  flex flex-col opacity-40 border-2 border-rose-500"
       />
     );
   }
@@ -87,25 +87,23 @@ function ColumnContainer({
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-columnBackgroundColor w-[250px] h-[300px] max-h-[500px]  flex flex-col"
+      className="bg-backgroundColor w-[250px] h-[300px] max-h-[500px]  flex flex-col"
     >
       {/* Column Task Container */}
-      <div className="flex flex-grow max-h-[300px] flex-col p-2 border-b border-r border-white">
-        <div className="flex flex-grow flex-col gap-4 overflow-x-hidden overflow-y-auto">
-          <SortableContext
-            items={tasksIds}
-            strategy={verticalListSortingStrategy}
-          >
-            {tasks.map((task) => (
-              <SortableTask
-                key={task.id}
-                task={task}
-                deleteTask={() => deleteTask(task.id)}
-                onDoubleClick={() => onDoubleClick(task.id)}
-              />
-            ))}
-          </SortableContext>
-        </div>
+      <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto border-b border-r border-secondaryColor">
+        <SortableContext
+          items={tasksIds}
+          strategy={verticalListSortingStrategy}
+        >
+          {tasks.map((task) => (
+            <SortableTask
+              key={task.id}
+              task={task}
+              deleteTask={() => deleteTask(task.id)}
+              onDoubleClick={() => onDoubleClick(task.id)}
+            />
+          ))}
+        </SortableContext>
         <div className="self-end mt-auto">
           <span>{totalCost} $ </span>
           <sup>

@@ -9,7 +9,7 @@ import TaskListContainer from "@/components/TempTask/TaskListContainer";
 export default function Home() {
   return (
     <div className="flex w-[1000px] flex-col pl-10 ">
-      <div className="flex absolute top-20  flex-col  ">
+      <div className="flex  flex-col  ">
         <TaskManager />
       </div>
     </div>

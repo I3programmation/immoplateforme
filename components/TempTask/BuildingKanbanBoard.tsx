@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import PlusIcon from "../icons/PlusIcon";
+import { ChartNoAxesColumn, Ellipsis, SearchIcon, Triangle, Plus } from 'lucide-react';
 import { Building, Column, Multiplier, Task } from "@/types/types";
 import BuildingContainer from "./BuildingContainer";
 import BuildingModal from "../BuildingModal";
@@ -133,75 +134,103 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 mt-5 pb-[10%] overflow-y-auto">
       <div className="flex w-full">
         {/* Left Section - IMMEUBLE */}
-        <div className="w-1/6 flex items-center rounded-tl-2xl justify-center bg-mainBackgroundColor border border-white p-2 text-white">
-          <div className="flex">
-            IMMEUBLE
-            <button
-              onClick={() => setIsBuildingModalOpen(true)}
-              className="ml-2"
-            >
-              <PlusIcon />
-            </button>
+        <div className="w-1/6 flex items-center rounded-tl-2xl justify-center bg-backgroundColor border border-secondaryColor p-2 text-textColor">
+          <div className="flex h-full items-end">
+            <div className="flex gap-1 h-1/5 mb-3">
+                <h2 className="text-[1.8rem] font-bold">Immeuble</h2>
+              <div className="flex mt-[0.7rem] items-center gap-2 h-1/2">
+                <button
+                  className="ml-2 flex- items-center"
+                >
+                      <Triangle size={14} className="text-primaryColor rotate-180 fill-primaryColor" />
+                </button>
+                <button
+                  onClick={() => setIsBuildingModalOpen(true)}
+                  className=" flex- items-center"
+                >
+                      <Plus size={24} className="text-primaryColor" />
+                </button>
+              </div>
+
+            </div>
+
           </div>
         </div>
 
         {/* Right Section (Contains Search Bar + ANNÉE DE RÉALISATION + Years) */}
         <div className="w-5/6">
           {/* 🔥 NEW: Top Bar with Search + Tags + Cost Calculation */}
-          <div className="flex items-center justify-between rounded-tr-2xl bg-mainBackgroundColor border-t border-b border-r border-white p-2">
-            {/* Search Bar */}
-            <input
-              type="text"
-              placeholder="Rechercher..."
-              className="p-2 bg-black text-white border border-white rounded w-1/3"
-            />
+          <div className="flex items-center h-[4.25rem] pl-[1rem] justify-between rounded-tr-2xl bg-backgroundColor border-t border-b border-r border-secondaryColor p-2">
+              <div className="relative w-1/3">
+                <input
+                type="text"
+                placeholder="Rechercher..."
+                className="p-2 bg-backgroundColor text-textColor border border-secondaryColor rounded w-full"
+                />
+                <span
+                className="absolute top-1/2 right-[4%] transform -translate-y-1/2 text-textColor"
+                >
+                <SearchIcon size={20} className="text-primaryColor" />
+                </span>
+              </div>
 
             {/* Tags & Cost Calculation */}
-            <div className="flex items-center gap-4 text-white ">
-              <span>#tags •••</span>
-              <span
-                onClick={handleCostCalculationClick}
-                className="cursor-pointer"
-              >
-                Calcul des coûts •••
-              </span>
-              <Popover
-                open={isCostCalculationOpen}
-                onClose={handleCostCalculationClose}
-                anchorEl={anchorElCostCalculation}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                slotProps={{
-                  paper: {
-                    style: {
-                      backgroundColor: "transparent",
+            <div className="flex items-center justify-end gap-[3rem] text-textColor text-lg w-1/2 mr-5">
+                <button className="flex items-center gap-2 hover:opacity-70">
+                  Exporter en Excel
+                  <ChartNoAxesColumn size={25} className="text-primaryColor" />
+                </button>
+                <button className="flex items-center gap-2 hover:opacity-70">
+                  #Tags
+                  <Ellipsis size={25} className="text-primaryColor" />
+                </button>
+                <button className="flex items-center gap-2 hover:opacity-70" onClick={handleCostCalculationClick}>
+                  Calcul des coûts
+                  <Ellipsis size={25} className="text-primaryColor" />
+                </button>
+                <Popover
+                  open={isCostCalculationOpen}
+                  onClose={handleCostCalculationClose}
+                  anchorEl={anchorElCostCalculation}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  slotProps={{
+                    paper: {
+                      style: {
+                        backgroundColor: "transparent",
+                      },
                     },
-                  },
-                }}
-              >
-                <TaskCostMultiplierModal
-                  multipliers={multipliers}
-                  currentlySelectedMultipliers={currentlySelectedMultipliers}
-                  isCummulative={isCummulative}
-                  setIsCummulative={setIsCummulative}
-                  setCurrentlySelectedMultipliers={
-                    setCurrentlySelectedMultipliers
-                  }
-                  setMultipliers={setMultipliers}
-                  handleClose={handleCostCalculationClose}
-                />
+                  }}
+                >
+                  <TaskCostMultiplierModal
+                      multipliers={multipliers}
+                      currentlySelectedMultipliers={currentlySelectedMultipliers}
+                      isCummulative={isCummulative}
+                      setIsCummulative={setIsCummulative}
+                      setCurrentlySelectedMultipliers={
+                        setCurrentlySelectedMultipliers
+                      }
+                      setMultipliers={setMultipliers}
+                      handleClose={handleCostCalculationClose}
+                  />
               </Popover>
             </div>
           </div>
 
           {/* Existing - Année de Réalisation */}
-          <div className="flex items-center justify-center bg-mainBackgroundColor border-b border-r border-white p-2">
-            ANNÉE DE RÉALISATION
+          <div className="flex items-center justify-center bg-backgroundColor border-b border-r border-secondaryColor p-2 text-textColor">
+            <h2 className="text-[1.3rem]">
+              Année de réalisation
+            </h2>
+            <div className="flex items-center justify-center gap-2 ml-2">
+              <Triangle size={12} className="text-primaryColor rotate-180 fill-primaryColor" />
+              <Plus size={20} className="text-primaryColor" />
+            </div>
           </div>
 
           {/* Existing - Years Row */}
@@ -220,7 +249,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
         </div>
       </div>
 
-      <div className="w-full max-h-[80vh] overflow-y-auto ">
+      <div className="w-full  overflow-y-auto ">
         {buildings.map((building) => (
           <BuildingContainer
             key={building.id}
