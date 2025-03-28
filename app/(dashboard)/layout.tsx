@@ -1,7 +1,7 @@
 import { UserButton } from "@clerk/nextjs";
 import React, { ReactNode } from "react";
 import Logo from "@/components/Logo";
-import { Lock, LogOut  } from "lucide-react";
+import { Lock } from "lucide-react";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 function Layout({ children }: { children: ReactNode }) {

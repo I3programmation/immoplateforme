@@ -48,7 +48,7 @@ export default function HomePage() {
           <Logo/>
         </p>
 
-        <Link href="/sign-up" passHref className="bg-primaryColor text-backgroundColor text-[19px] flex items-center justify-center h-[4rem] w-[10rem] rounded-[5px] font-semibold hover:text-gray-300 mt-4">S'inscrire</Link>
+        <Link href="/sign-up" passHref className="bg-primaryColor text-backgroundColor text-[19px] flex items-center justify-center h-[4rem] w-[10rem] rounded-[5px] font-semibold hover:text-gray-300 mt-4">S&apos;inscrire</Link>
       </div>
     </div>
     );
