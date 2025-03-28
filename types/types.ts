@@ -58,3 +58,8 @@ export interface Multiplier {
   name: string;
   value: number;
 }
+
+export interface MultiplierFormData {
+  name: string;
+  value: number;
+}

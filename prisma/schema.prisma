@@ -51,3 +51,10 @@ model Column {
   building   Building @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   tasks      Task[] // Chaque colonne a ses propres tâches
 }
+
+model Multiplier {
+  id        String @id @default(uuid())
+  order     Int    // Ordre d'affichage du multiplicateur
+  name      String @unique // Nom du multiplicateur
+  value     Float  // Valeur du multiplicateur
+}
