@@ -37,20 +37,20 @@ function BuildingContainer({
   );
 
   return (
-    <div className="flex flex-wrap items-center overflow-x-auto overflow-y-hidden ">
+    <div className="flex flex-wrap items-center overflow-x-auto ">
       <div className="m-auto flex">
         {/* Building Info */}
-        <div className="bg-mainBackgroundColor border-b border-r border-l border-white p-4 flex w-[250px]  ">
-          <div className="flex flex-col">
-            <h2 className="text-3xl font-semibold">{building.buildingName}</h2>
-            <h3 className="text-xl font-thin">{building.buildingGroup}</h3>
-            <h3 className="text-xl font-thin">{building.subgroup}</h3>
+        <div className="bg-backgroundColor border-b border-r border-l border-secondaryColor flex w-[250px]  justify-center">
+          <div className="flex flex-col w-[100%] pt-5 pl-5">
+            <h2 className="text-[1.25rem] w-full text-textColor font-bold">{building.buildingName}</h2>
+            <h3 className="text-xs text-textColor font-thin">Groupe : {building.buildingGroup}</h3>
+            <h3 className="text-xs text-textColor font-thin">Sous-groupe : {building.subgroup}</h3>
           </div>
           <button
-            className="flex justify-end items-end"
+            className="flex justify-end items-end pr-5 pb-5"
             onClick={() => deleteBuilding(building.id)}
           >
-            <TrashIcons />
+            <TrashIcons className="text-textColor h-5 w-5" />
           </button>
         </div>
 
