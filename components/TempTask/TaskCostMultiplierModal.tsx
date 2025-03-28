@@ -1,7 +1,8 @@
 "use client";
-import { Multiplier } from "@/types/types";
+import { Multiplier, MultiplierFormData } from "@/types/types";
 import { Popover } from "@mui/material";
 import { useEffect, useState } from "react";
+import CreateMultiplierModal from "./CreateMultiplierModal";
 
 interface TaskCostMultiplierModalProps {
   multipliers: Multiplier[];
@@ -11,6 +12,7 @@ interface TaskCostMultiplierModalProps {
   setCurrentlySelectedMultipliers: React.Dispatch<
     React.SetStateAction<Multiplier[]>
   >;
+  setMultipliers: React.Dispatch<React.SetStateAction<Multiplier[]>>;
   handleClose: () => void;
 }
 
@@ -20,6 +22,7 @@ const TaskCostMultiplierModal = ({
   isCummulative,
   setIsCummulative,
   setCurrentlySelectedMultipliers,
+  setMultipliers,
   handleClose,
 }: TaskCostMultiplierModalProps) => {
   const [checkedMultipliers, setCheckedMultipliers] = useState<{
@@ -31,6 +34,7 @@ const TaskCostMultiplierModal = ({
   ] = useState(false);
   const [isCummulativeChecked, setIsCummulativeChecked] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [isCreateMultiplierOpen, setIsCreateMultiplierOpen] = useState(false);
 
   useEffect(() => {
     const checkedMultipliers: { [key: string]: boolean } = {};
@@ -82,6 +86,31 @@ const TaskCostMultiplierModal = ({
   const handleCloseChangeCostCalculationMethod = () => {
     setAnchorEl(null);
     setIsChangeCostCalculationMethodOpen(false);
+  };
+
+  const handleCreateMultiplier = async (
+    multiplierFormData: MultiplierFormData
+  ) => {
+    try {
+      const response = await fetch("/api/multipliers", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(multiplierFormData),
+      });
+      if (!response.ok) {
+        throw new Error("Erreur de création du multiplicateur");
+      }
+      const data = await response.json();
+      setMultipliers((prev) => [...prev, data]);
+      setCheckedMultipliers((prev) => ({
+        ...prev,
+        [data.id]: true,
+      }));
+    } catch (error) {
+      console.error("Erreur de création du multiplicateur:", error);
+    }
   };
 
   return (
@@ -153,7 +182,7 @@ const TaskCostMultiplierModal = ({
             key={multiplier.id}
             className="flex items-center justify-between h-10"
           >
-            <span className="text-gray-500 w-8">({multiplier.id})</span>
+            <span className="text-gray-500 w-8">({multiplier.order})</span>
             <label htmlFor={multiplier.id} className="flex-1 mx-2">
               {multiplier.name} ({multiplier.value})
             </label>
@@ -170,9 +199,18 @@ const TaskCostMultiplierModal = ({
       </div>
 
       <div className="flex justify-center mb-4">
-        <button className="p-2 rounded border border-gray-300 hover:bg-gray-100">
+        <button
+          className="p-2 rounded border border-gray-300 hover:bg-gray-100"
+          onClick={() => setIsCreateMultiplierOpen(true)}
+        >
           +
         </button>
+        {isCreateMultiplierOpen && (
+          <CreateMultiplierModal
+            onClose={() => setIsCreateMultiplierOpen(false)}
+            onCreate={handleCreateMultiplier}
+          />
+        )}
       </div>
 
       <div className="flex justify-between mt-2">

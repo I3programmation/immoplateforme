@@ -10,14 +10,6 @@ import TaskColHeader from "./TaskColHeader";
 import { Popover } from "@mui/material";
 import TaskCostMultiplierModal from "./TaskCostMultiplierModal";
 
-const multipliers: Multiplier[] = [
-  { id: "1", order: 1, name: "TPS", value: 1.05 },
-  { id: "2", order: 2, name: "TVQ", value: 1.09975 },
-  { id: "3", order: 3, name: "Multiplicateur 3", value: 1.25 },
-  { id: "4", order: 4, name: "Multiplicateur 4", value: 0.78 },
-  { id: "5", order: 5, name: "Multiplicateur 5", value: 1.8 },
-];
-
 interface BuildingKanbanBoardProps {
   tasks: Task[];
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
@@ -34,6 +26,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
 }) => {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [columns, setColumns] = useState<Column[]>([]);
+  const [multipliers, setMultipliers] = useState<Multiplier[]>([]);
   const [isBuildingModalOpen, setIsBuildingModalOpen] = useState(false);
   const [isCostCalculationOpen, setIsCostCalculationOpen] = useState(false);
   const [anchorElCostCalculation, setAnchorElCostCalculation] =
@@ -56,6 +49,27 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
       console.error("❌ Erreur lors du chargement:", error);
     }
   };
+
+  const fetchMultipliers = async () => {
+    try {
+      const response = await fetch("/api/multipliers");
+      if (!response.ok)
+        throw new Error("Erreur de chargement des multiplicateurs");
+      const data = await response.json();
+      setMultipliers(data);
+    } catch (error) {
+      console.error("❌ Erreur lors du chargement des multiplicateurs:", error);
+      return [];
+    }
+  };
+
+  // ✅ Fetch multipliers on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchMultipliers();
+    };
+    fetchData();
+  }, []);
 
   // ✅ Call the function on mount
   useEffect(() => {
@@ -179,6 +193,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
                   setCurrentlySelectedMultipliers={
                     setCurrentlySelectedMultipliers
                   }
+                  setMultipliers={setMultipliers}
                   handleClose={handleCostCalculationClose}
                 />
               </Popover>
