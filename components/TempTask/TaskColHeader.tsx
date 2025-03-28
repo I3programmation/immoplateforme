@@ -7,12 +7,14 @@ interface TaskColHeaderProps {
   tasks: Task[];
   columns: Column[];
   currentlyAppliedMultipliers: Multiplier[];
+  isCummulative: boolean;
 }
 const TaskColHeader: React.FC<TaskColHeaderProps> = ({
   title,
   tasks,
   columns,
   currentlyAppliedMultipliers,
+  isCummulative,
 }) => {
   const columnCost = useMemo(() => {
     const columTasks = tasks.filter((task) =>
@@ -23,15 +25,27 @@ const TaskColHeader: React.FC<TaskColHeaderProps> = ({
       return currentColumnTotal + taskCost;
     }, 0);
 
-    const rawFinalCost = currentlyAppliedMultipliers.reduce(
-      (currentTotal, multiplier) => {
-        return currentTotal * multiplier.value;
-      },
-      columnGrossCost
-    );
+    let rawFinalCost = 0;
+    if (isCummulative) {
+      rawFinalCost = currentlyAppliedMultipliers.reduce(
+        (currentTotal, multiplier) => {
+          return currentTotal * multiplier.value;
+        },
+        columnGrossCost
+      );
+    } else {
+      const totalAdjustementPercentage = currentlyAppliedMultipliers.reduce(
+        (currentTotal, multiplier) => {
+          return currentTotal + (multiplier.value - 1);
+        },
+        0
+      );
+      rawFinalCost =
+        columnGrossCost + columnGrossCost * totalAdjustementPercentage;
+    }
 
     return Math.round((rawFinalCost + Number.EPSILON) * 100) / 100;
-  }, [columns, currentlyAppliedMultipliers, tasks]);
+  }, [columns, isCummulative, currentlyAppliedMultipliers, tasks]);
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center bg-mainBackgroundColor border-b border-r border-white p-4">
@@ -41,7 +55,7 @@ const TaskColHeader: React.FC<TaskColHeaderProps> = ({
         <sup>
           (
           {currentlyAppliedMultipliers
-            .map((multiplier) => multiplier.id)
+            .map((multiplier) => multiplier.order)
             .join(", ") || 0}
           )
         </sup>

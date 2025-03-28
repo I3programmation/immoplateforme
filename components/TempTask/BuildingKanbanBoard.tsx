@@ -11,11 +11,11 @@ import { Popover } from "@mui/material";
 import TaskCostMultiplierModal from "./TaskCostMultiplierModal";
 
 const multipliers: Multiplier[] = [
-  { id: "1", name: "TPS", value: 1.05 },
-  { id: "2", name: "TVQ", value: 1.09975 },
-  { id: "3", name: "Multiplicateur 3", value: 1.25 },
-  { id: "4", name: "Multiplicateur 4", value: 0.78 },
-  { id: "5", name: "Multiplicateur 5", value: 1.8 },
+  { id: "1", order: 1, name: "TPS", value: 1.05 },
+  { id: "2", order: 2, name: "TVQ", value: 1.09975 },
+  { id: "3", order: 3, name: "Multiplicateur 3", value: 1.25 },
+  { id: "4", order: 4, name: "Multiplicateur 4", value: 0.78 },
+  { id: "5", order: 5, name: "Multiplicateur 5", value: 1.8 },
 ];
 
 interface BuildingKanbanBoardProps {
@@ -40,6 +40,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
     useState<HTMLElement | null>(null);
   const [currentlySelectedMultipliers, setCurrentlySelectedMultipliers] =
     useState<Multiplier[]>([]);
+  const [isCummulative, setIsCummulative] = useState(true);
 
   const titles = ["2025", "2026", "2027", "2028", "2029"];
 
@@ -173,6 +174,8 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
                 <TaskCostMultiplierModal
                   multipliers={multipliers}
                   currentlySelectedMultipliers={currentlySelectedMultipliers}
+                  isCummulative={isCummulative}
+                  setIsCummulative={setIsCummulative}
                   setCurrentlySelectedMultipliers={
                     setCurrentlySelectedMultipliers
                   }
@@ -196,6 +199,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
                 tasks={tasks}
                 columns={columns.filter((col) => col.title === title)}
                 currentlyAppliedMultipliers={currentlySelectedMultipliers}
+                isCummulative={isCummulative}
               />
             ))}
           </div>
@@ -214,6 +218,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
             setTasks={setTasks}
             deleteTask={deleteTask} // ✅ Pass deleteTask
             onDoubleClick={onDoubleClick}
+            isCummulative={isCummulative}
             // ✅ Pass onDoubleClick
           />
         ))}

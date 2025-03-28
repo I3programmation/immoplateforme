@@ -13,6 +13,7 @@ interface ColumnContainerProps {
   column: Column;
   tasks: Task[];
   currentlyAppliedMultipliers: Multiplier[];
+  isCummulative: boolean;
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   deleteTask: (id: string) => void;
 
@@ -23,6 +24,7 @@ function ColumnContainer({
   column,
   tasks,
   currentlyAppliedMultipliers,
+  isCummulative,
   deleteTask,
   onDoubleClick,
 }: ColumnContainerProps) {
@@ -33,15 +35,26 @@ function ColumnContainer({
       return currentTotal + taskCost;
     }, 0);
 
-    const rawFinalCost = currentlyAppliedMultipliers.reduce(
-      (currentTotal, multiplier) => {
-        return currentTotal * multiplier.value;
-      },
-      grossCost
-    );
+    let rawFinalCost = 0;
+    if (isCummulative) {
+      rawFinalCost = currentlyAppliedMultipliers.reduce(
+        (currentTotal, multiplier) => {
+          return currentTotal * multiplier.value;
+        },
+        grossCost
+      );
+    } else {
+      const totalAdjustementPercentage = currentlyAppliedMultipliers.reduce(
+        (currentTotal, multiplier) => {
+          return currentTotal + (multiplier.value - 1);
+        },
+        0
+      );
+      rawFinalCost = grossCost + grossCost * totalAdjustementPercentage;
+    }
 
     return Math.round((rawFinalCost + Number.EPSILON) * 100) / 100;
-  }, [currentlyAppliedMultipliers, tasks]);
+  }, [isCummulative, currentlyAppliedMultipliers, tasks]);
 
   const {
     setNodeRef,
@@ -98,7 +111,7 @@ function ColumnContainer({
           <sup>
             (
             {currentlyAppliedMultipliers
-              .map((multiplier) => multiplier.id)
+              .map((multiplier) => multiplier.order)
               .join(", ") || 0}
             )
           </sup>

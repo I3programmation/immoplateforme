@@ -54,6 +54,7 @@ export interface TaskListColumn {
 
 export interface Multiplier {
   id: string;
+  order: number;
   name: string;
   value: number;
 }

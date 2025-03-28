@@ -12,6 +12,7 @@ interface BuildingContainerProps {
   columns: Column[]; // Pass columns separately since Building doesn't have them
   tasks: Task[];
   currentlyAppliedMultipliers: Multiplier[];
+  isCummulative: boolean;
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   deleteTask: (id: string) => void;
   // ✅ Add onDragOver with correct type
@@ -24,6 +25,7 @@ function BuildingContainer({
   columns,
   tasks,
   currentlyAppliedMultipliers,
+  isCummulative,
   setTasks,
   deleteTask,
   onDoubleClick,
@@ -47,15 +49,26 @@ function BuildingContainer({
       return currentTotal + columnCost;
     }, 0);
 
-    const rawFinalCost = currentlyAppliedMultipliers.reduce(
-      (currentTotal, multiplier) => {
-        return currentTotal * multiplier.value;
-      },
-      totalGrossCost
-    );
+    let rawFinalCost = 0;
+    if (isCummulative) {
+      rawFinalCost = currentlyAppliedMultipliers.reduce(
+        (currentTotal, multiplier) => {
+          return currentTotal * multiplier.value;
+        },
+        totalGrossCost
+      );
+    } else {
+      const totalAdjustementPercentage = currentlyAppliedMultipliers.reduce(
+        (currentTotal, multiplier) => {
+          return currentTotal + (multiplier.value - 1);
+        },
+        0
+      );
+      rawFinalCost = totalGrossCost * (1 + totalAdjustementPercentage);
+    }
 
     return Math.round((rawFinalCost + Number.EPSILON) * 100) / 100;
-  }, [buildingColumns, currentlyAppliedMultipliers, tasks]);
+  }, [buildingColumns, isCummulative, currentlyAppliedMultipliers, tasks]);
 
   return (
     <div className="flex flex-wrap items-center overflow-x-auto overflow-y-hidden ">
@@ -72,7 +85,7 @@ function BuildingContainer({
             <sup>
               (
               {currentlyAppliedMultipliers
-                .map((multiplier) => multiplier.id)
+                .map((multiplier) => multiplier.order)
                 .join(", ") || 0}
               )
             </sup>
@@ -97,6 +110,7 @@ function BuildingContainer({
                 deleteTask={deleteTask} // ✅ Pass deleteTask
                 onDoubleClick={onDoubleClick} // ✅ Pass onDoubleClick
                 currentlyAppliedMultipliers={currentlyAppliedMultipliers}
+                isCummulative={isCummulative}
               />
             ))}
           </SortableContext>
