@@ -4,7 +4,7 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Column, Task } from "@/types/types";
+import { Column, Multiplier, Task } from "@/types/types";
 import { CSS } from "@dnd-kit/utilities";
 import { useMemo } from "react";
 import { SortableTask } from "@/components/SortableTask";
@@ -12,6 +12,8 @@ import { SortableTask } from "@/components/SortableTask";
 interface ColumnContainerProps {
   column: Column;
   tasks: Task[];
+  currentlyAppliedMultipliers: Multiplier[];
+  isCummulative: boolean;
   setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   deleteTask: (id: string) => void;
 
@@ -21,11 +23,38 @@ interface ColumnContainerProps {
 function ColumnContainer({
   column,
   tasks,
-
+  currentlyAppliedMultipliers,
+  isCummulative,
   deleteTask,
   onDoubleClick,
 }: ColumnContainerProps) {
   const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
+  const totalCost = useMemo(() => {
+    const grossCost = tasks.reduce((currentTotal, task) => {
+      const taskCost = Number(task.price) || 0;
+      return currentTotal + taskCost;
+    }, 0);
+
+    let rawFinalCost = 0;
+    if (isCummulative) {
+      rawFinalCost = currentlyAppliedMultipliers.reduce(
+        (currentTotal, multiplier) => {
+          return currentTotal * multiplier.value;
+        },
+        grossCost
+      );
+    } else {
+      const totalAdjustementPercentage = currentlyAppliedMultipliers.reduce(
+        (currentTotal, multiplier) => {
+          return currentTotal + (multiplier.value - 1);
+        },
+        0
+      );
+      rawFinalCost = grossCost + grossCost * totalAdjustementPercentage;
+    }
+
+    return Math.round((rawFinalCost + Number.EPSILON) * 100) / 100;
+  }, [isCummulative, currentlyAppliedMultipliers, tasks]);
 
   const {
     setNodeRef,
@@ -75,6 +104,16 @@ function ColumnContainer({
             />
           ))}
         </SortableContext>
+        <div className="self-end mt-auto">
+          <span>{totalCost} $ </span>
+          <sup>
+            (
+            {currentlyAppliedMultipliers
+              .map((multiplier) => multiplier.order)
+              .join(", ") || 0}
+            )
+          </sup>
+        </div>
       </div>
     </div>
   );

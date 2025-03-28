@@ -2,11 +2,14 @@
 import React, { useState, useEffect } from "react";
 import PlusIcon from "../icons/PlusIcon";
 import { ChartNoAxesColumn, Ellipsis, SearchIcon, Triangle, Plus } from 'lucide-react';
-import { Building, Column, Task } from "@/types/types";
+import { Building, Column, Multiplier, Task } from "@/types/types";
 import BuildingContainer from "./BuildingContainer";
 import BuildingModal from "../BuildingModal";
 import { add } from "date-fns";
 import { DragOverEvent } from "@dnd-kit/core";
+import TaskColHeader from "./TaskColHeader";
+import { Popover } from "@mui/material";
+import TaskCostMultiplierModal from "./TaskCostMultiplierModal";
 
 interface BuildingKanbanBoardProps {
   tasks: Task[];
@@ -24,7 +27,14 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
 }) => {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [columns, setColumns] = useState<Column[]>([]);
+  const [multipliers, setMultipliers] = useState<Multiplier[]>([]);
   const [isBuildingModalOpen, setIsBuildingModalOpen] = useState(false);
+  const [isCostCalculationOpen, setIsCostCalculationOpen] = useState(false);
+  const [anchorElCostCalculation, setAnchorElCostCalculation] =
+    useState<HTMLElement | null>(null);
+  const [currentlySelectedMultipliers, setCurrentlySelectedMultipliers] =
+    useState<Multiplier[]>([]);
+  const [isCummulative, setIsCummulative] = useState(true);
 
   const titles = ["2025", "2026", "2027", "2028", "2029"];
 
@@ -40,6 +50,27 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
       console.error("❌ Erreur lors du chargement:", error);
     }
   };
+
+  const fetchMultipliers = async () => {
+    try {
+      const response = await fetch("/api/multipliers");
+      if (!response.ok)
+        throw new Error("Erreur de chargement des multiplicateurs");
+      const data = await response.json();
+      setMultipliers(data);
+    } catch (error) {
+      console.error("❌ Erreur lors du chargement des multiplicateurs:", error);
+      return [];
+    }
+  };
+
+  // ✅ Fetch multipliers on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchMultipliers();
+    };
+    fetchData();
+  }, []);
 
   // ✅ Call the function on mount
   useEffect(() => {
@@ -88,6 +119,18 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
     } catch (error) {
       console.error("❌ Erreur lors de la suppression du bâtiment:", error);
     }
+  };
+
+  const handleCostCalculationClick = (
+    event: React.MouseEvent<HTMLSpanElement>
+  ) => {
+    setIsCostCalculationOpen(true);
+    setAnchorElCostCalculation(event.currentTarget);
+  };
+
+  const handleCostCalculationClose = () => {
+    setIsCostCalculationOpen(false);
+    setAnchorElCostCalculation(null);
   };
 
   return (
@@ -144,10 +187,38 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
                   #Tags
                   <Ellipsis size={25} className="text-primaryColor" />
                 </button>
-                <button className="flex items-center gap-2 hover:opacity-70">
+                <button className="flex items-center gap-2 hover:opacity-70" onClick={handleCostCalculationClick}>
                   Calcul des coûts
                   <Ellipsis size={25} className="text-primaryColor" />
                 </button>
+                <Popover
+                  open={isCostCalculationOpen}
+                  onClose={handleCostCalculationClose}
+                  anchorEl={anchorElCostCalculation}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  slotProps={{
+                    paper: {
+                      style: {
+                        backgroundColor: "transparent",
+                      },
+                    },
+                  }}
+                >
+                  <TaskCostMultiplierModal
+                      multipliers={multipliers}
+                      currentlySelectedMultipliers={currentlySelectedMultipliers}
+                      isCummulative={isCummulative}
+                      setIsCummulative={setIsCummulative}
+                      setCurrentlySelectedMultipliers={
+                        setCurrentlySelectedMultipliers
+                      }
+                      setMultipliers={setMultipliers}
+                      handleClose={handleCostCalculationClose}
+                  />
+              </Popover>
             </div>
           </div>
 
@@ -165,12 +236,14 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
           {/* Existing - Years Row */}
           <div className="flex ">
             {titles.map((title, index) => (
-              <div
+              <TaskColHeader
                 key={index}
-                className="flex-1 flex items-center justify-center bg-backgroundColor border-b border-r border-secondaryColor p-4 text-textColor"
-              >
-                {title}
-              </div>
+                title={title}
+                tasks={tasks}
+                columns={columns.filter((col) => col.title === title)}
+                currentlyAppliedMultipliers={currentlySelectedMultipliers}
+                isCummulative={isCummulative}
+              />
             ))}
           </div>
         </div>
@@ -184,9 +257,11 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
             columns={columns.filter((col) => col.buildingId === building.id)}
             deleteBuilding={deleteBuilding}
             tasks={tasks}
+            currentlyAppliedMultipliers={currentlySelectedMultipliers}
             setTasks={setTasks}
             deleteTask={deleteTask} // ✅ Pass deleteTask
             onDoubleClick={onDoubleClick}
+            isCummulative={isCummulative}
             // ✅ Pass onDoubleClick
           />
         ))}

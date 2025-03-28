@@ -51,3 +51,17 @@ export interface TaskListColumn {
   title: string;
   tasks: Task[];
 }
+
+export interface Multiplier {
+  id: string;
+  order: number;
+  name: string;
+  value: number;
+}
+
+export interface MultiplierFormData {
+  id?: string; // ID optionnel pour la mise à jour ou la suppression
+  order?: number; // Ordre optionnel pour la mise à jour ou la suppression
+  name: string;
+  value: number;
+}
