@@ -48,10 +48,10 @@ const TaskColHeader: React.FC<TaskColHeaderProps> = ({
   }, [columns, isCummulative, currentlyAppliedMultipliers, tasks]);
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center bg-mainBackgroundColor border-b border-r border-white p-4">
+    <div className="flex-1 flex flex-col items-center justify-center bg-mainBackgroundColor text-textColor border-b border-r border-textColor p-4">
       <span>{title}</span>
       <div>
-        <span>{columnCost} $ </span>
+        <strong>{columnCost}$</strong>
         <sup>
           (
           {currentlyAppliedMultipliers

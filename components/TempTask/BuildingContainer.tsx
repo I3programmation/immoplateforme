@@ -75,22 +75,27 @@ function BuildingContainer({
       <div className="m-auto flex">
         {/* Building Info */}
 
-        <div className="bg-backgroundColor border-b border-r border-l border-secondaryColor flex w-[250px]  justify-center">
+        <div className="bg-backgroundColor  text-textColor border-b border-r border-l border-secondaryColor flex w-[250px]  justify-center">
           <div className="flex flex-col w-[100%] pt-5 pl-5">
-            <h2 className="text-[1.25rem] w-full text-textColor font-bold">{building.buildingName}</h2>
-            <h3 className="text-xs text-textColor font-thin">Groupe : {building.buildingGroup}</h3>
-            <h3 className="text-xs text-textColor font-thin">Sous-groupe : {building.subgroup}</h3>
-
-          </div>
-          <div className="ml-auto">
-            <span>{totalBuildingCost} $ </span>
-            <sup>
-              (
-              {currentlyAppliedMultipliers
-                .map((multiplier) => multiplier.order)
-                .join(", ") || 0}
-              )
-            </sup>
+            <h2 className="text-[1.25rem] w-full font-bold">
+              {building.buildingName}
+            </h2>
+            <h3 className="text-xs font-thin">
+              Groupe : {building.buildingGroup}
+            </h3>
+            <h3 className="text-xs font-thin">
+              Sous-groupe : {building.subgroup}
+            </h3>
+            <div className="ml-auto">
+              <strong>{totalBuildingCost}$</strong>
+              <sup>
+                (
+                {currentlyAppliedMultipliers
+                  .map((multiplier) => multiplier.order)
+                  .join(", ") || 0}
+                )
+              </sup>
+            </div>
           </div>
           <button
             className="flex justify-end items-end pr-5 pb-5"
