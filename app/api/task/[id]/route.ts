@@ -3,20 +3,71 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function PUT(
+export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   const { id } = params;
   try {
-    // Vérifier si l'utilisateur est authentifié
-    // const { userId } = getAuth(request);  // Vérifier l'authentification via Clerk
+    // On récupère la tâche avec ses relations :
+    // - La colonne associée (include: { building: true })
+    // - Les tags associés
+    const task = await prisma.task.findUnique({
+      where: { id },
+      include: {
+        column: {
+          include: {
+            building: true,
+          },
+        },
+        tags: true,
+      },
+    });
 
-    // if (!userId) {
-    //   return new Response("Non autorisé", { status: 401 });  // Si l'utilisateur n'est pas authentifié, retour 401
-    // }
+    if (!task) {
+      return new Response(JSON.stringify({ error: "Tâche non trouvée" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
-    // Récupérer les données du body de la requête
+    // Si votre type Task attend un tableau de string pour les tags,
+    // on peut transformer le tableau de Tag en tableau d'ID.
+    const taskData = {
+      ...task,
+      tags: task.tags.map((tag) => tag.id),
+    };
+
+    // Construction de l'objet TaskFormData
+    const taskFormData = {
+      task: taskData,
+      column: task.column,
+      building: task.column.building,
+    };
+
+    return new Response(JSON.stringify(taskFormData), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    console.error(error);
+    return new Response("Erreur lors de la récupération de la tâche", {
+      status: 500,
+    });
+  }
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
+  const requestBody = await request.json();
+
+  console.log("📥 Received Request Body:", requestBody);
+
+  try {
+    // If the request body contains `task`, extract from it; otherwise, use requestBody directly
     const {
       content,
       priority,
@@ -25,36 +76,62 @@ export async function PUT(
       description,
       columnId,
       tags,
-    } = await request.json();
+    } = requestBody.task || requestBody; // ✅ Handle both `{ task: {...} }` and `{ columnId: ... }`
 
-    // Construire les opérations pour les tags
-    const tagOperations = {
-      connect: tags?.connect?.map((tagId: string) => ({ id: tagId })), // Ajouter des tags existants
-      disconnect: tags?.disconnect?.map((tagId: string) => ({ id: tagId })), // Retirer des tags existants
-      set: tags?.set?.map((tagId: string) => ({ id: tagId })), // Remplacer tous les tags associés
-    };
+    console.log("✅ Extracted Task Data:", {
+      content,
+      priority,
+      price,
+      discipline,
+      description,
+      columnId,
+      tags,
+    });
 
-    // Mise à jour de la tâche avec les nouveaux attributs et tags
+    // 🔹 Ensure at least one field to update is provided
+    if (
+      !content &&
+      !priority &&
+      !price &&
+      !discipline &&
+      !description &&
+      !columnId &&
+      !tags
+    ) {
+      return new Response("❌ Erreur: Aucune donnée à mettre à jour", {
+        status: 400,
+      });
+    }
+
+    // 🔹 Update only provided fields in the database
     const updatedTask = await prisma.task.update({
-      where: { id }, // Utilise l'id de la tâche passé dans l'URL
+      where: { id },
       data: {
-        content,
-        priority,
-        price,
-        discipline,
-        description,
-        columnId, // Nouvelle colonne (année) si la tâche doit être déplacée
-        tags: tagOperations, // Appliquer les changements sur les tags
+        ...(content !== undefined && { content }),
+        ...(priority !== undefined && { priority }),
+        ...(price !== undefined && { price }),
+        ...(discipline !== undefined && { discipline }),
+        ...(description !== undefined && { description }),
+        ...(columnId !== undefined && { columnId }), // ✅ Handle column change
+        tags: tags
+          ? {
+              connect: tags?.connect?.map((tagId: string) => ({ id: tagId })),
+              disconnect: tags?.disconnect?.map((tagId: string) => ({
+                id: tagId,
+              })),
+              set: tags?.set?.map((tagId: string) => ({ id: tagId })),
+            }
+          : undefined,
       },
     });
 
-    // Retourner la tâche mise à jour avec un statut 200 (OK)
+    console.log("✅ Updated Task:", updatedTask);
     return new Response(JSON.stringify(updatedTask), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error(error);
+    console.error("❌ Error updating task:", error);
     return new Response("Erreur lors de la mise à jour de la tâche", {
       status: 500,
     });

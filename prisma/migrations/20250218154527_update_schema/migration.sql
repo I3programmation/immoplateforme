@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Column" ALTER COLUMN "year" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "Task" ALTER COLUMN "price" SET DATA TYPE TEXT;

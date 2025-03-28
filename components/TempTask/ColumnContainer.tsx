@@ -1,144 +1,81 @@
 "use client";
-import { SortableContext, useSortable } from "@dnd-kit/sortable";
-import { Column, Task } from "./types";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { Column, Task } from "@/types/types";
 import { CSS } from "@dnd-kit/utilities";
-import { useMemo, useState } from "react";
-import TaskCard from "./TaskCard";
-interface Props {
-  column: Column;
-  deleteColumn: (id: string) => void;
-  updateColumn: (id: string, title: string) => void;
-  createTask: (columnId: string) => void;
+import { useMemo } from "react";
+import { SortableTask } from "@/components/SortableTask";
 
+interface ColumnContainerProps {
+  column: Column;
   tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   deleteTask: (id: string) => void;
-  updateTask: (id: string, content: string) => void;
+
+  onDoubleClick: (taskId: string) => void;
 }
 
-function ColumnContainer(props: Props) {
-  const {
-    column,
-    deleteColumn,
-    updateColumn,
-    createTask,
-    tasks,
-    deleteTask,
-    updateTask,
-  } = props;
+function ColumnContainer({
+  column,
+  tasks,
 
-  const [editMode, setEditMode] = useState(false);
-
-  const tasksIds = useMemo(() => {
-    return tasks.map((task) => task.id);
-  }, [tasks]);
+  deleteTask,
+  onDoubleClick,
+}: ColumnContainerProps) {
+  const tasksIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
 
   const {
     setNodeRef,
-    attributes,
-    listeners,
+
     transform,
     transition,
     isDragging,
   } = useSortable({
     id: column.id,
     data: { type: "Column", column },
-    disabled: editMode,
   });
-
-  //   const newTask: Task = {
-  //     id: generateId(),
-  //     columnId,
-  //     content: `Task ${tasks.length + 1}`,
-  //     priority: "",
-  //     year: "",
-  //     price: "",
-  //     building: "",
-  //     buildingGroup: "",
-  //     subgroup: "",
-  //     discipline: "",
-  //     description: "",
-  //     tags: [],
-  //   };
-  //   // Add the new task to the tasks array or handle it as needed
-  // };
 
   const style = {
     transition,
     transform: CSS.Transform.toString(transform),
+    zIndex: isDragging ? 1 : 0,
   };
+
   if (isDragging) {
     return (
       <div
         ref={setNodeRef}
         style={style}
-        className="bg-columnBackgroundColor w-[250px] h-[300px] max-h-[500px] rounded-md flex flex-col opacity-40 border-2 border-rose-500  "
-      >
-        {" "}
-      </div>
+        className="bg-backgroundColor w-[250px] h-[300px] max-h-[500px]  flex flex-col opacity-40 border-2 border-rose-500"
+      />
     );
   }
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="bg-columnBackgroundColor w-[250px] h-[300px] max-h-[500px] rounded-md flex flex-col"
+      className="bg-backgroundColor w-[250px] h-[300px] max-h-[500px]  flex flex-col"
     >
-      {/* ColumnTitle */}
-      {/* <div
-        {...attributes}
-        {...listeners}
-        onClick={() => setEditMode(true)}
-        className="bg-mainBackgroundColor text-md h-[60px] cursor-grab rounded-md rounded-b-none p-3 border-columnBackgroundColor border-4 font-bold flex items-center justify-between"
-      >
-        <div className="flex gap-2">
-          <div className="flex justify-center items-center bg-mainBackgroundColor px-2 py-1 text-sm rounded-full">
-            0
-          </div>
-
-          {!editMode && column.title}
-          {editMode && (
-            <input
-              className="bg-black focus:border-rose-500 border rounded outline-none px-2"
-              value={column.title}
-              onChange={(e) => updateColumn(column.id, e.target.value)}
-              autoFocus
-              onBlur={() => setEditMode(false)}
-              onKeyDown={(e) => {
-                if (e.key !== "Enter") return;
-                setEditMode(false);
-              }}
-            />
-          )}
-        </div>
-        <button
-          onClick={() => deleteColumn(column.id)}
-          className="stroke-gray-500 hover:stroke-white hover:bg-mainBackgroundColor rounded"
+      {/* Column Task Container */}
+      <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto border-b border-r border-secondaryColor">
+        <SortableContext
+          items={tasksIds}
+          strategy={verticalListSortingStrategy}
         >
-          <TrashIcon />
-        </button>
-      </div> */}
-
-      {/* Column task container */}
-      <div className="flex flex-grow flex-col gap-4 p-2 overflow-x-hidden overflow-y-auto border-2 border-white">
-        <SortableContext items={tasksIds}>
           {tasks.map((task) => (
-            <TaskCard
+            <SortableTask
               key={task.id}
               task={task}
-              deleteTask={deleteTask}
-              updateTask={updateTask}
+              deleteTask={() => deleteTask(task.id)}
+              onDoubleClick={() => onDoubleClick(task.id)}
             />
           ))}
         </SortableContext>
       </div>
-      {/* Column footer */}
-      {/* <button
-        className="flex gap-2 items-center border-columnBackgroundColor border-2 rounded-md p-4 border-x-columnBackgroundColor hover:bg-mainBackgroundColor hover:text-rose-500 active:bg-black"
-        onClick={() => createTask(column.id)}
-      >
-        <PlusIcon />
-        Add task
-      </button> */}
     </div>
   );
 }

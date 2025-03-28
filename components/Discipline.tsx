@@ -35,15 +35,16 @@ const DisciplineSelector: React.FC<DisciplineSelectorProps> = ({
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "0.5rem",
           }}
         >
           {disciplines.map((d) => (
             <FormControlLabel
               key={d.value}
               value={d.value}
-              control={<Radio size="small" />}
+              control={<Radio size="medium" />}
               label={<span style={{ fontSize: "12px" }}>{d.label}</span>}
-              className="-my-2"
+              className="-my-2 w-[10rem]"
             />
           ))}
         </RadioGroup>
