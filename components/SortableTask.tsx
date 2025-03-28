@@ -61,6 +61,12 @@ export const SortableTask: React.FC<SortableTaskProps> = ({
         return "border-green-500";
       case 3:
         return "border-red-500";
+      case 4:
+        return "border-yellow-500";
+      case 5:
+        return "border-purple-500";
+      case 6:
+        return "border-indigo-500";
       default:
         return "border-gray-300";
     }
@@ -86,17 +92,13 @@ export const SortableTask: React.FC<SortableTaskProps> = ({
             orientation="vertical"
             flexItem
             className="m-0 p-0"
-            sx={{ borderColor: "var(--foreground)" }}
+            style={{ width: "2px", backgroundColor: "rgba(0,0,0,0.1)", border: "none" }}
           />
-          <div className="flex flex-col w-full items-center text-gray-500 m-0 p-0">
-            <div className="p-2 m-0">{task.price}$</div>
-            <Divider
-              flexItem
-              className="m-0 p-0"
-              sx={{ borderColor: "var(--foreground)" }}
-            />
+          <div className="flex flex-col w-full items-end text-gray-500 m-0 p-0 pr-2 gap-2">
+            <div className="pt-2 m-0">{task.price}$</div>
+
             <div
-              className={`flex-shrink-0 w-6 h-6 rounded-full text-white flex items-center my-1 justify-center ${getPriorityColor(
+              className={`flex-shrink-0 w-6 h-6 rounded-full text-white flex items-center mb-1 justify-center ${getPriorityColor(
                 Number(task.discipline)
               )}`}
             >
