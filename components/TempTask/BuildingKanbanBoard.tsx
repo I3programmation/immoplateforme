@@ -134,7 +134,7 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
   };
 
   return (
-    <div className="p-4 mt-5 pb-[10%] overflow-y-auto">
+    <div className="p-4 mt-5 py-[5%] overflow-y-auto translate-y-[5rem]">
       <div className="flex w-full">
         {/* Left Section - IMMEUBLE */}
         <div className="w-1/6 flex items-center rounded-tl-2xl justify-center bg-backgroundColor border border-secondaryColor p-2 text-textColor">

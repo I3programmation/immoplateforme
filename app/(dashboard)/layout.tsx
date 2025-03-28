@@ -9,7 +9,7 @@ function Layout({ children }: { children: ReactNode }) {
     <div className="flex flex-col min-h-screen min-w-full bg-background">
 
 
-      <nav className="flex flex-col w-full">
+      <nav className="flex flex-col w-full fixed top-0 z-[15]">
 
 
         {/* UPPER NAV */}
@@ -46,7 +46,7 @@ function Layout({ children }: { children: ReactNode }) {
        
       </nav>
 
-      <main className="flex w-full flex-grow">{children}</main>
+      <main className="flex w-full max-h-screen">{children}</main>
     </div>
   );
 }

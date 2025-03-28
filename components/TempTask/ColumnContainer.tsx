@@ -91,7 +91,7 @@ function ColumnContainer({
     >
       {/* Column Task Container */}
       <div className="flex flex-grow max-h-[300px] flex-col p-2 text-textColor border-b border-r border-secondaryColor">
-        <div className="flex flex-grow flex-col gap-4 overflow-x-hidden overflow-y-auto">
+        <div className="flex flex-grow flex-col gap-4  overflow-y-auto">
           <SortableContext
             items={tasksIds}
             strategy={verticalListSortingStrategy}
