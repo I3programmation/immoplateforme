@@ -60,6 +60,8 @@ export interface Multiplier {
 }
 
 export interface MultiplierFormData {
+  id?: string; // ID optionnel pour la mise à jour ou la suppression
+  order?: number; // Ordre optionnel pour la mise à jour ou la suppression
   name: string;
   value: number;
 }

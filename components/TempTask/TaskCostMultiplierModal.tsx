@@ -2,7 +2,8 @@
 import { Multiplier, MultiplierFormData } from "@/types/types";
 import { Popover } from "@mui/material";
 import { useEffect, useState } from "react";
-import CreateMultiplierModal from "./CreateMultiplierModal";
+import MultiplierModal from "./MultiplierModal";
+import { Pen } from "lucide-react";
 
 interface TaskCostMultiplierModalProps {
   multipliers: Multiplier[];
@@ -35,6 +36,8 @@ const TaskCostMultiplierModal = ({
   const [isCummulativeChecked, setIsCummulativeChecked] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [isCreateMultiplierOpen, setIsCreateMultiplierOpen] = useState(false);
+  const [existingMultiplierFormData, setExistingMultiplierFormData] =
+    useState<MultiplierFormData | null>(null);
 
   useEffect(() => {
     const checkedMultipliers: { [key: string]: boolean } = {};
@@ -113,8 +116,62 @@ const TaskCostMultiplierModal = ({
     }
   };
 
+  const handleModifyMultiplier = async (
+    multiplierFormData: MultiplierFormData
+  ) => {
+    try {
+      const response = await fetch(
+        `/api/multipliers/${existingMultiplierFormData?.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(multiplierFormData),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Erreur de modification du multiplicateur");
+      }
+      const newMultiplier = await response.json();
+
+      const allMultipliers = await fetch("/api/multipliers");
+      if (!allMultipliers.ok) {
+        throw new Error("Erreur de récupération des multiplicateurs");
+      }
+      const data = await allMultipliers.json();
+      setMultipliers(data);
+      setCheckedMultipliers((prev) => ({
+        ...prev,
+        [newMultiplier.id]: true,
+      }));
+      setExistingMultiplierFormData(null);
+    } catch (error) {
+      console.error("Erreur de modification du multiplicateur:", error);
+    }
+  };
+
+  const handleDeleteMultiplier = async (multiplierId: string) => {
+    try {
+      const response = await fetch(`/api/multipliers/${multiplierId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Erreur de suppression du multiplicateur");
+      }
+      setMultipliers((prev) =>
+        prev.filter((multiplier) => multiplier.id !== multiplierId)
+      );
+    } catch (error) {
+      console.error("Erreur de suppression du multiplicateur:", error);
+    }
+  };
+
   return (
-    <div className="bg-white p-4 rounded border border-black relative">
+    <div className="bg-accent text-primary p-4 rounded relative">
       <button
         className="absolute top-3 right-3"
         onClick={handleCancel}
@@ -142,8 +199,15 @@ const TaskCostMultiplierModal = ({
           vertical: "top",
           horizontal: "right",
         }}
+        slotProps={{
+          paper: {
+            style: {
+              backgroundColor: "transparent",
+            },
+          },
+        }}
       >
-        <div className="p-4 bg-white rounded shadow-md">
+        <div className="p-4 rounded shadow-md bg-accent text-primary ">
           <h2 className="mb-4 font-bold text-center">Méthode de calcul</h2>
           <fieldset className="flex gap-4">
             <input
@@ -178,14 +242,19 @@ const TaskCostMultiplierModal = ({
 
       <div className="mb-4">
         {multipliers.map((multiplier) => (
-          <div
-            key={multiplier.id}
-            className="flex items-center justify-between h-10"
-          >
+          <div key={multiplier.id} className="flex items-center  h-10">
             <span className="text-gray-500 w-8">({multiplier.order})</span>
-            <label htmlFor={multiplier.id} className="flex-1 mx-2">
-              {multiplier.name} ({multiplier.value})
-            </label>
+            <div className="flex-1 flex gap-2 mx-2">
+              <Pen
+                onClick={() => setExistingMultiplierFormData(multiplier)}
+                className="mr-auto cursor-pointer hover:text-blue-500"
+              />
+              <label htmlFor={multiplier.id} className="cursor-pointer">
+                <span>{multiplier.name}</span>
+                <span className="text-gray-500"> ({multiplier.value})</span>
+              </label>
+            </div>
+
             <input
               type="checkbox"
               id={multiplier.id}
@@ -196,19 +265,29 @@ const TaskCostMultiplierModal = ({
             />
           </div>
         ))}
+
+        {existingMultiplierFormData && (
+          <MultiplierModal
+            onClose={() => setExistingMultiplierFormData(null)}
+            onAction={handleModifyMultiplier}
+            onDelete={handleDeleteMultiplier}
+            existingMultiplierFormData={existingMultiplierFormData}
+            isModifying={true}
+          />
+        )}
       </div>
 
       <div className="flex justify-center mb-4">
         <button
-          className="p-2 rounded border border-gray-300 hover:bg-gray-100"
+          className="p-2 rounded border border-gray-300 hover:opacity-40 w-full"
           onClick={() => setIsCreateMultiplierOpen(true)}
         >
           +
         </button>
         {isCreateMultiplierOpen && (
-          <CreateMultiplierModal
+          <MultiplierModal
             onClose={() => setIsCreateMultiplierOpen(false)}
-            onCreate={handleCreateMultiplier}
+            onAction={handleCreateMultiplier}
           />
         )}
       </div>
@@ -221,10 +300,10 @@ const TaskCostMultiplierModal = ({
           Rénitialiser
         </button>
         <button
-          className="bg-mainBackgroundColor text-white py-1 px-4 rounded hover:opacity-90"
+          className="bg-background text-primary py-1 px-4 rounded hover:opacity-40"
           onClick={handleSubmit}
         >
-          OK
+          Appliquer
         </button>
       </div>
     </div>

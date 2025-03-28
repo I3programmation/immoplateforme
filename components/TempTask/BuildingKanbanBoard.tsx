@@ -180,7 +180,6 @@ const BuildingKanbanBoard: React.FC<BuildingKanbanBoardProps> = ({
                   paper: {
                     style: {
                       backgroundColor: "transparent",
-                      boxShadow: "none",
                     },
                   },
                 }}
